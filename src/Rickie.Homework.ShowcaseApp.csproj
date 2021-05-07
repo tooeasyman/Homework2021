@@ -8,9 +8,6 @@
     <StartupObject>Rickie.Homework.ShowcaseApp.LocalEntryPoint</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="LambdaEntryPoint.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="hibernate.cfg.xml" />
   </ItemGroup>
   <ItemGroup>
