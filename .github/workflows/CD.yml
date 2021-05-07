@@ -1,0 +1,38 @@
+name: CD
+
+# Triggers the workflow on releases published with tag pattern release*, e.g. release.0.1
+on:  
+  release:
+    types: [published]
+
+jobs:
+  release:
+    if: contains(github.ref, 'refs/tags/release')
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: setup .net core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+          
+      - name: install lambda tools
+        run: dotnet tool install -g Amazon.Lambda.Tools
+
+      - name: build lambda package
+        run: dotnet lambda package --msbuild-parameters "/p:PublishReadyToRun=true --self-contained false"
+        working-directory: src/
+
+      - name: aws login        
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-southeast-2
+          
+      - name: deploy        
+        uses: docker://glassechidna/stackit
+        with:
+          args: stackit up --stack-name showcase-app --template serverless.yml

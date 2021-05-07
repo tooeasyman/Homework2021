@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2">
+  <sql-query name="MakePayment">
+    <return-scalar column="PaymentId" type="guid"/>
+    exec dbo.MakePayment :UserID, :Amount, :PayTo
+    </sql-query>
+</hibernate-mapping>

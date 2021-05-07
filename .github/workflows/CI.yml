@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: setup .net core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+    
+      - name: restore dependencies
+        run: dotnet restore
+        working-directory: src/
+      
+      - name: build
+        id: build
+        continue-on-error: true
+        run: dotnet build --no-restore
+        working-directory: src/      
+      
+      - name: unit tests and integration tests
+        id: test        
+        run:  dotnet test --no-build --verbosity normal
+        working-directory: test/ 
+      
+      - name: report CI status as PR comment
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: "CI - build: ${{ steps.build.outcome }}, test: ${{ steps.test.outcome }}"
+            })

@@ -1,0 +1,9 @@
+.vscode/
+.vs/
+bin/
+obj/
+*.user
+.terraform/
+.terraform.lock.hcl
+*.zip
+src/appsettings.Development.json
