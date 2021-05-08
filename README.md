@@ -11,27 +11,27 @@ This application starts with two web API controllers.
 - create payment - make a payment to another user account in the system
 - getpayments - show current user's balance and list of payments
 
-MediatR is employed to keep those controller thin and loosely coupled with CQRS pattern based heavy lifting classes. Dependencies like commands, queries and handlers are automatically injected.
+MediatR is employed to keep those controllers thin and loosely coupled with CQRS pattern based heavy lifting classes. Dependencies like commands, queries and handlers are automatically injected.
 
-More libraries like AutoMapper, FluentValidation are used to make the classes extremely loosely coupled.
+More libraries like AutoMapper, FluentValidation are also employed to further help loose coupling.
 
-Persistence wise, NHiberate is used so that I can focus more on OOP instead of RDBMS programming.
+Persistence wise, NHiberate is used for the application to stay OOP instead of RDBMS centric.
 
 Extensibility wise, changes can be made to commands and queries easily to incorporate more business needs. E.g. to add support for getting payments in a date range, only very minimal changes are needed around the controller class, GetPaymentsQuery and its handler.
 
-To help you navigte the code base, here are main folders and corresponding use:
+To help you navigte the code base, here is a list of main folders:
 
 - .github\workflows - Github actions. Two workflows are provided take care of CI and CD respectively
 - database - sql script to create the backend database and initialize demo data
 - src - web api implementation.
 - src\Command - CQRS.commands
 - src\Controllers - web API controllers
-- src\CustomExceptions - a good practice to follow: our business logic specific exceptions
-- src\Extensions - a bunch of service extension classes to seamlessly weave validation, persistence, JWT auth etc into .net core API pipeline
+- src\CustomExceptions - a good practice to follow: define our business logic specific exceptions wherever possible.(I haven't created many though due to time constraints)
+- src\Extensions - a bunch of service extension classes to seamlessly weave validation, persistence, JWT auth etc into the web API pipeline
 - src\mappers - NHibernate mapping classes
 - src\Middlewares - error handling and JWT middleware to attach current user ID to current http context
 - src\Models - mainly POCO entities
-- src\Persistence - NHibernate based persitence access classes
+- src\Persistence - NHibernate based persitence layer code
 - src\Queries - CQRS.queries
 - src\Services - password and auth service
 - test - test project
@@ -49,14 +49,13 @@ For demo purpose, I have used AWS to host this web API. Services used:
 
 ## TODOs, notes and assumptions
 
-- Main focus of this excersise is architecture design instead of coding
-- Use terraform and helm charts instead for Infrastructure as Code
+- Main focus of this excersise is architecture design
+- Use terraform and helm charts instead for Infrastructure as Code. Would be good to case if we potentially need to switch infra hsoting to a differnt provider/platform
 - Apply branch protection rules like 'no direct commit to main', 'build has to be green before merge' etc. Some are not implemented due to free Github account limitation, others could be easily done via web hooks or Github actions
 - Code generate all database objects instead of using sql scripts
 - More tests. The current ones are very basic to demonstrate the approach.
 - Paged records retrival for payments
-
-## Source code structure
+- Use System Manager/Parameter store and KMS for even more secure secrets management
 
 ## How to build and run locally
 
