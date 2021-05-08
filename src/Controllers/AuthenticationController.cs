@@ -31,7 +31,9 @@ namespace Rickie.Homework.ShowcaseApp.Controllers
         {
             if (Request.Headers.ContainsKey("X-Forwarded-For"))
                 return Request.Headers["X-Forwarded-For"];
-            return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            if(HttpContext.Connection.RemoteIpAddress != null)
+                return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            return "127.0.0.1";
         }
     }
 }
