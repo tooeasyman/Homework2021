@@ -23,7 +23,7 @@ namespace Rickie.Homework.ShowcaseApp.Extensions
             mapper.AddMappings(typeof(UserMap).Assembly.ExportedTypes);
 
             var domainMapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
-            var connectionString = configuration.GetConnectionString("MSSQLConnection");
+            var connectionString = configuration.GetConnectionString("MSSQLConnectionLocal");
 
             // TODO: use AWS SSM and KMS instead for connection string
             if (configuration.GetValue<bool>("IsCloudDeployment"))
