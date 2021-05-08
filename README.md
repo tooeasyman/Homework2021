@@ -50,7 +50,7 @@ For demo purpose, I have used AWS to host this web API. Services used:
 ## TODOs, notes and assumptions
 
 - Main focus of this excersise is architecture design
-- Use terraform and helm charts instead for Infrastructure as Code. Would be good to case if we potentially need to switch infra hsoting to a differnt provider/platform
+- Use terraform and helm charts instead for Infrastructure as Code which would be better for potential needs to switch infra hosting to a differnt provider/platform
 - Apply branch protection rules like 'no direct commit to main', 'build has to be green before merge' etc. Some are not implemented due to free Github account limitation, others could be easily done via web hooks or Github actions
 - Code generate all database objects instead of using sql scripts
 - More tests. The current ones are very basic to demonstrate the approach.
