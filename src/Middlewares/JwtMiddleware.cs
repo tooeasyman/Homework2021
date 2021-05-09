@@ -11,7 +11,7 @@ using Rickie.Homework.ShowcaseApp.Models;
 namespace Rickie.Homework.ShowcaseApp.Middlewares
 {
     /// <summary>
-    ///     Middleware to claimed user's ID to current http context
+    ///     Middleware to attach ID of the user represented by current bearer token to http context
     /// </summary>
     public class JwtMiddleware
     {

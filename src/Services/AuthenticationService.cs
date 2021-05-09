@@ -34,6 +34,12 @@ namespace Rickie.Homework.ShowcaseApp.Services
             _userTokenRepository = userTokenRepository;
         }
 
+        /// <summary>
+        ///     Authenticate a user and issue token
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
         public virtual async Task<ApiResponse<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request,
             string ipAddress)
         {

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using NHibernate.Cfg;
 using NHibernate.Dialect;
-using NHibernate.Engine;
 using NHibernate.Mapping.ByCode;
 using Rickie.Homework.ShowcaseApp.Mappers;
 using Rickie.Homework.ShowcaseApp.Persistence;
@@ -15,6 +14,11 @@ namespace Rickie.Homework.ShowcaseApp.Extensions
     /// </summary>
     public static class ServiceExtensionPersistence
     {
+        /// <summary>
+        ///     Config NHibernate and inject storage access objects
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
         public static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
             var mapper = new ModelMapper();
@@ -23,16 +27,17 @@ namespace Rickie.Homework.ShowcaseApp.Extensions
             mapper.AddMappings(typeof(UserMap).Assembly.ExportedTypes);
 
             var domainMapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
+            
+            // Use local development connection string by default
             var connectionString = configuration.GetConnectionString("MSSQLConnectionLocal");
-
-            // TODO: use AWS SSM and KMS instead for connection string
+            
+            // Use AWS Lambda runtime config for production
             if (configuration.GetValue<bool>("IsCloudDeployment"))
+                // TODO: use AWS SSM and KMS instead for connection string
                 connectionString = Environment.GetEnvironmentVariable("CloudMSSQLConnection");
 
             var nhConfiguration = new Configuration();
             nhConfiguration.Configure("hibernate.cfg.xml");
-
-
             nhConfiguration.DataBaseIntegration(c =>
             {
                 c.Dialect<MsSql2012Dialect>();
@@ -41,8 +46,6 @@ namespace Rickie.Homework.ShowcaseApp.Extensions
                 c.LogFormattedSql = true;
                 c.LogSqlInConsole = true;
             });
-
-            // nhConfiguration.NamedSQLQueries.Add("MakePayment", new NamedSQLQueryDefinition(""));
 
             nhConfiguration.AddMapping(domainMapping);
             var sessionFactory = nhConfiguration.BuildSessionFactory();
