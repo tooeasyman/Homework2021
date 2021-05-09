@@ -8,7 +8,7 @@ using MediatR;
 namespace Rickie.Homework.ShowcaseApp.Extensions
 {
     /// <summary>
-    ///     Weave validations into the pipeline
+    ///     Run CQRS command/query validators before handlers
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TResponse"></typeparam>

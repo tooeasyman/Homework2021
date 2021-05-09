@@ -13,7 +13,7 @@ using Rickie.Homework.ShowcaseApp.Models;
 namespace Rickie.Homework.ShowcaseApp.Extensions
 {
     /// <summary>
-    ///     Extension class to add JWT authentication to service collection
+    ///     Service extension class to add JWT authentication to service collection
     /// </summary>
     public static class ServiceExtensionJwtAuth
     {
@@ -26,7 +26,10 @@ namespace Rickie.Homework.ShowcaseApp.Extensions
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services,
             IConfiguration configuration)
         {
+            // Load relevant configs
             services.Configure<JwtConfiguration>(configuration.GetSection("JWTSettings"));
+
+            // Use bearer based authentication
             services.AddAuthentication(x =>
                 {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -47,6 +50,8 @@ namespace Rickie.Homework.ShowcaseApp.Extensions
                     };
                     x.RequireHttpsMetadata = false;
                     x.SaveToken = true;
+
+                    // Hook custom error handlers for authentication failures
                     x.Events = new JwtBearerEvents
                     {
                         OnChallenge = context =>

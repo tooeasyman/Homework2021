@@ -13,6 +13,7 @@ namespace Rickie.Homework.ShowcaseApp.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
+        private static readonly string LocalIp = "127.0.0.1";
         private readonly IAuthenticationService _authenticationService;
 
         public AuthenticationController(IAuthenticationService authenticationService)
@@ -20,20 +21,25 @@ namespace Rickie.Homework.ShowcaseApp.Controllers
             _authenticationService = authenticationService;
         }
 
+        /// <summary>
+        ///     Authenticate a user account
+        /// </summary>
+        /// <param name="request">Authentication request payload</param>
+        /// <returns>JWT if authentication succeeds, error reason otherwise</returns>
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public async Task<IActionResult> AuthenticateAsync(AuthenticationRequest request)
         {
-            return Ok(await _authenticationService.AuthenticateAsync(request, GetRequestIPAddress()));
+            return Ok(await _authenticationService.AuthenticateAsync(request, GetRequestIpAddress()));
         }
 
-        private string GetRequestIPAddress()
+        private string GetRequestIpAddress()
         {
             if (Request.Headers.ContainsKey("X-Forwarded-For"))
                 return Request.Headers["X-Forwarded-For"];
-            if(HttpContext.Connection.RemoteIpAddress != null)
+            if (HttpContext.Connection.RemoteIpAddress != null)
                 return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            return "127.0.0.1";
+            return LocalIp;
         }
     }
 }

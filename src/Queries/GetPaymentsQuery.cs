@@ -30,7 +30,8 @@ namespace Rickie.Homework.ShowcaseApp.Queries
         private readonly IUserRepositoryAsync _userRepository;
 
         public GetPaymentsQueryHandler(IUserRepositoryAsync userRepository,
-            IUserBalanceRepositoryAsync userBalanceRepository, IPaymentRepositoryAsync paymentRepository, IMapper mapper)
+            IUserBalanceRepositoryAsync userBalanceRepository, IPaymentRepositoryAsync paymentRepository,
+            IMapper mapper)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -38,7 +39,14 @@ namespace Rickie.Homework.ShowcaseApp.Queries
             _paymentRepository = paymentRepository;
         }
 
-        public async Task<ApiResponse<UserPaymentsPayload>> Handle(GetPaymentsQuery request, CancellationToken cancellationToken)
+        /// <summary>
+        ///     Get balance and payments of a specific user
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ApiResponse<UserPaymentsPayload>> Handle(GetPaymentsQuery request,
+            CancellationToken cancellationToken)
         {
             var user =
                 (await _userRepository.FindByCondition(x => x.UserId.Equals(request.UserId)).ConfigureAwait(false))
@@ -50,7 +58,9 @@ namespace Rickie.Homework.ShowcaseApp.Queries
             // TODO: Add paging if there are too many payments
             var paymentsList =
                 (await _paymentRepository.FindByCondition(x => x.UserId.Equals(request.UserId)).ConfigureAwait(false))
-                .AsQueryable().ToList().OrderByDescending(t => t.Date);
+                .AsQueryable().ToList()
+                // Business requirement - sort payments by latest date
+                .OrderByDescending(t => t.Date);
 
             var result = _mapper.Map<UserPaymentsPayload>(user);
             result.Balance = userBalance?.Balance ?? 0;
